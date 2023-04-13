@@ -16,7 +16,7 @@ def main(opt):
     save_path = os.path.join(track_path, 'result' + str(index))
     os.makedirs(save_path, exist_ok=True)
 
-    model = RTMDet()
+    model = RTMDet(device)
     pipeline = pl.create_pipeline()
 
     frame_size = (640, 480)
@@ -32,15 +32,19 @@ def main(opt):
             color_image, _ = image.get_images(pipeline)
 
             # get detection result
-            result, pred_time, esc_time = model.get_prediction(color_image, [0], device=device)
+            result, pred_time = model.get_prediction(color_image, [0])
+            if (result == None):
+                print('frame', i, ': object not found for the specified classes')
+                i += 1
+                continue
             masked_image = model.get_masked_image(color_image, result)
 
-            print('frame', i, ': prediction time =', round(pred_time, 2), 's\textract specified classes time =', round(esc_time, 2), 's')
+            print('frame', i, ': prediction time =', round(pred_time, 2), 's')
             cv2.imshow('masked image', masked_image)
 
             # save video
             out.write(masked_image)
-            elapsed_time += pred_time + esc_time
+            elapsed_time += pred_time
 
             if (cv2.waitKey(1) == 27):
                 break
