@@ -1,5 +1,4 @@
 from mmdet.apis import inference_detector, init_detector
-from mmdet.structures import DetDataSample
 from mmengine.structures.instance_data import InstanceData
 import os
 from mmdet.registry import VISUALIZERS
