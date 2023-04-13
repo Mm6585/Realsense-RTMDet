@@ -25,27 +25,24 @@ def main(opt):
     file_path = os.path.join(save_path, 'result.avi')
     out = cv2.VideoWriter(file_path, fourcc, fps, frame_size)
 
-    start = time()
     elapsed_time = 0
     i = 0
     try:
         while (True):
-            color_image, depth_iamge = image.get_images(pipeline)
+            color_image, _ = image.get_images(pipeline)
 
             # get detection result
             result, pred_time, esc_time = model.get_prediction(color_image, [0])
             masked_image = model.get_masked_image(color_image, result)
-            stacked_image = np.hstack([color_image, depth_iamge, masked_image])
 
             print('frame', i, ': prediction time =', round(pred_time, 2), 's\textract specified classes time =', round(esc_time, 2), 's')
-            cv2.imshow('Realsense', stacked_image)
+            cv2.imshow('masked image', masked_image)
 
             # save video
             out.write(masked_image)
             elapsed_time += pred_time + esc_time
 
-            key = cv2.waitKey(1)
-            if (key == 27):
+            if (cv2.waitKey(1) == 27):
                 break
 
             i += 1

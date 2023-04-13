@@ -15,7 +15,7 @@ class RTMDet:
         checkpoint = os.path.join(cur_path, 'weights/rtmdet-ins_s.pth')
         self.model = init_detector(config, checkpoint, device='cpu')
 
-    def get_prediction(self, image, classes=None):
+    def get_prediction(self, image, classes=None, device='cuda:0'):
         pred_start = time()
         pred_result = inference_detector(self.model, image)
         pred_time = time() - pred_start
@@ -31,10 +31,16 @@ class RTMDet:
             bboxes = []
             priors = []
 
-            pred_kernels = pred_result.pred_instances.kernels.numpy()
-            pred_masks = pred_result.pred_instances.masks.numpy()
-            pred_bboxes = pred_result.pred_instances.bboxes.numpy()
-            pred_priors = pred_result.pred_instances.priors.numpy()
+            if (device == 'cpu'):
+                pred_kernels = pred_result.pred_instances.kernels.numpy()
+                pred_masks = pred_result.pred_instances.masks.numpy()
+                pred_bboxes = pred_result.pred_instances.bboxes.numpy()
+                pred_priors = pred_result.pred_instances.priors.numpy()
+            else:
+                pred_kernels = pred_result.pred_instances.kernels.cpu().numpy()
+                pred_masks = pred_result.pred_instances.masks.cpu().numpy()
+                pred_bboxes = pred_result.pred_instances.bboxes.cpu().numpy()
+                pred_priors = pred_result.pred_instances.priors.cpu().numpy()
 
             for i in range(len(pred_result.pred_instances['labels'])):
                 if (pred_result.pred_instances['labels'][i] in classes):
