@@ -16,7 +16,7 @@ def main(opt):
     save_path = os.path.join(track_path, 'result' + str(index))
     os.makedirs(save_path, exist_ok=True)
 
-    model = RTMDet(device=device)
+    model = RTMDet()
     pipeline = pl.create_pipeline()
 
     frame_size = (640, 480)
@@ -32,7 +32,7 @@ def main(opt):
             color_image, _ = image.get_images(pipeline)
 
             # get detection result
-            result, pred_time, esc_time = model.get_prediction(color_image, [0])
+            result, pred_time, esc_time = model.get_prediction(color_image, [0], device=device)
             masked_image = model.get_masked_image(color_image, result)
 
             print('frame', i, ': prediction time =', round(pred_time, 2), 's\textract specified classes time =', round(esc_time, 2), 's')

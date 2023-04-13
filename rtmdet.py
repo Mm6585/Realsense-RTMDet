@@ -24,41 +24,19 @@ class RTMDet:
         esc_start = time()
         if (classes is not None):
             # keys = ['kernels', 'labels', 'masks', 'scores', 'bboxes', 'priors']
-            kernels = []
-            labels = []
-            masks = []
-            scores = []
-            bboxes = []
-            priors = []
 
-            if (device == 'cpu'):
-                pred_kernels = pred_result.pred_instances.kernels.numpy()
-                pred_masks = pred_result.pred_instances.masks.numpy()
-                pred_bboxes = pred_result.pred_instances.bboxes.numpy()
-                pred_priors = pred_result.pred_instances.priors.numpy()
-            else:
-                pred_kernels = pred_result.pred_instances.kernels.cpu().numpy()
-                pred_masks = pred_result.pred_instances.masks.cpu().numpy()
-                pred_bboxes = pred_result.pred_instances.bboxes.cpu().numpy()
-                pred_priors = pred_result.pred_instances.priors.cpu().numpy()
-
-            for i in range(len(pred_result.pred_instances['labels'])):
-                if (pred_result.pred_instances['labels'][i] in classes):
-                    kernels.append(pred_kernels[i])
-                    labels.append(pred_result.pred_instances.labels[i].item())
-                    masks.append(pred_masks[i])
-                    scores.append(pred_result.pred_instances.scores[i].item())
-                    bboxes.append(pred_bboxes[i])
-                    priors.append(pred_priors[i])
+            _labels = pred_result.pred_instances.labels
+            _class = torch.isin(_labels, torch.tensor(classes))
 
             pred_result.pred_instances = InstanceData(**dict(
-                kernels = torch.tensor(kernels),
-                labels = torch.tensor(labels),
-                masks = torch.tensor(masks),
-                scores = torch.tensor(scores),
-                bboxes = torch.tensor(bboxes),
-                priors = torch.tensor(priors)
+                kernels = torch.squeeze(pred_result.pred_instances.kernels[_class]),
+                labels = torch.squeeze(pred_result.pred_instances.labels[_class]),
+                masks = torch.squeeze(pred_result.pred_instances.masks[_class]),
+                scores = torch.squeeze(pred_result.pred_instances.scores[_class]),
+                bboxes = torch.squeeze(pred_result.pred_instances.bboxes[_class]),
+                priors = torch.squeeze(pred_result.pred_instances.priors[_class])
             ))
+
             esc_time = time() - esc_start
 
         return pred_result, pred_time, esc_time
