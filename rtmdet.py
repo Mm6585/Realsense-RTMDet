@@ -1,8 +1,8 @@
-from mmdet.apis import inference_detector, init_detector
-from mmengine.structures.instance_data import InstanceData
 import os
 from time import time
-import numpy as np
+
+from mmdet.apis import inference_detector, init_detector
+# from mmengine.structures.instance_data import InstanceData
 
 ws_path = os.getcwd()
 cur_path = os.path.abspath('.')
