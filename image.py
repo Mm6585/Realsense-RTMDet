@@ -1,9 +1,7 @@
-import pipeline as pl
 import numpy as np
 import cv2
 import pyrealsense2 as rs
-import os
-from mmdet.registry import VISUALIZERS
+# from mmdet.registry import VISUALIZERS
 from cfg import get_classes, get_colors
 
 model_classes = get_classes()
