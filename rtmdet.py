@@ -27,17 +27,14 @@ class RTMDet:
         if (pred_labels.any()):
             # extract specified classes
             if (classes is not None):
-                esc_strat = time()
                 _class = [i in classes for i in pred_labels]
                 pred_result = [pred_labels[_class], pred_masks[_class], pred_scores[_class], pred_bboxes[_class]]
-                esc_time = time() - esc_strat
-                return pred_result, pred_time, esc_time
+                return pred_result, pred_time
             else:
                 pred_result = [pred_labels, pred_masks, pred_scores, pred_bboxes]
-                print(pred_result)
-                return pred_result, pred_time, 0
+                return pred_result, pred_time
         else:
-            return None, pred_time, 0
+            return None, pred_time
 
             ### if you want to use mmdetection apis, use this. ###
             # _labels = pred_result.pred_instances.labels
