@@ -15,7 +15,6 @@ depth_out = cv2.VideoWriter(depth_path, fourcc, fps, frame_size)
 
 pipeline, profile = pl.create_pipeline()
 
-
 while (True):
     color_image, depth_image = image.get_images(pipeline)
     color_out.write(color_image)
