@@ -27,9 +27,9 @@ def create_pipeline():
         config.enable_stream(rs.stream.color, 640, 480, rs.format.bgr8, 30)
 
     # Start streaming
-    pipeline.start(config)
+    profile = pipeline.start(config)
 
-    return pipeline
+    return pipeline, profile
 
 def stop_pipeline(pipeline):
     pipeline.stop()
